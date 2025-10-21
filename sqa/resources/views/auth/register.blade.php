@@ -53,7 +53,7 @@
                     <label for="role" class="form-label">Register as</label>
                     <select name="role_id" class="form-select" required>
                         <option value="2">Student</option>
-                        <option value="1">Staff</option>
+
                     </select>
                 </div>
 
