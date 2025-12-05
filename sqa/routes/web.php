@@ -55,5 +55,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/staff/profile/photo', [StaffProfileController::class, 'uploadPhoto'])->name('staff.profile.photo');
 });
 
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/staff/enrollment', function () {
+        return view('module.enroll');
+    })->name('staff.enrollment');
+});
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/staff/add', function () {
+        return view('module.add');
+    })->name('staff.add');
+});
+
 
 require __DIR__ . '/auth.php';
