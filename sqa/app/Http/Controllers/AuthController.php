@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Staff;
+use App\Models\Admin;
 
 class AuthController extends Controller
 {
@@ -21,6 +22,23 @@ class AuthController extends Controller
     public function showRegister()
     {
         return view('auth.register');
+    }
+
+    private function generateAdminId()
+    {
+        // Get the last admin ID from DB
+        $lastAdmin = Admin::orderBy('id', 'desc')->first();
+
+        // Default number
+        $number = 1;
+
+        if ($lastAdmin && $lastAdmin->admin_id) {
+            // Extract the number from admin_id, e.g. AD0005 -> 5
+            $number = intval(substr($lastAdmin->admin_id, 2)) + 1;
+        }
+
+        // Return formatted ID, e.g. AD0006
+        return 'AD' . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
 
     private function generateStaffId()
@@ -61,7 +79,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'role_id' => 'required|in:1,2',
+            'role_id' => 'required|in:1,2,3',
         ]);
 
         $user = User::create([
@@ -71,17 +89,23 @@ class AuthController extends Controller
         ]);
 
         // Create corresponding profile based on role
-        if ($user->role_id == 2) {
+        if ($user->role_id == 3) {
             Student::create([
                 'user_id' => $user->id,
                 'role_id' => $user->role_id,
                 'student_id' => $this->generateStudentId(),
             ]);
-        } elseif ($user->role_id == 1) {
+        } elseif ($user->role_id == 2) {
             Staff::create([
                 'user_id' => $user->id,
                 'role_id' => $user->role_id,
                 'staff_id' => $this->generateStaffId(),
+            ]);
+        } elseif ($user->role_id == 1) {
+            Admin::create([
+                'user_id' => $user->id,
+                'role_id' => $user->role_id,
+                'admin_id' => $this->generateAdminId(),
             ]);
         }
 
@@ -106,6 +130,8 @@ class AuthController extends Controller
                 return redirect()->route('student.dashboard');
             } elseif ($user->role->name === 'staff') {
                 return redirect()->route('staff.dashboard');
+            } elseif ($user->role->name === 'admin') {
+                return redirect()->route('admin.dashboard');
             } else {
                 return redirect()->route('home'); // default fallback
             }

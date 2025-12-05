@@ -8,6 +8,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//admin dashboard
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware(['auth', 'role:admin'])->name('admin.dashboard');
+
+//admin profile
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/profile', [AdminProfileController::class, 'index'])->name('admin.profile');
+    Route::put('/admin/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+    Route::post('/admin/profile/photo', [AdminProfileController::class, 'uploadPhoto'])->name('admin.profile.photo');
+});
+
+//admin register user
+Route::get('/admin/register', function () {
+    return view('admin.register');
+})->middleware(['auth', 'role:admin'])->name('admin.register');
+
+
 // Student Dashboard
 Route::get('/student/dashboard', function () {
     return view('student.dashboard');

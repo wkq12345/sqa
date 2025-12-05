@@ -30,7 +30,7 @@
                 @if (Route::has('login'))
                     <div class="d-flex">
                         @auth
-                            <a href="staff.dashboard" class="btn btn-primary me-2">Home</a>
+                            <a href="{{ route('/dashboard') }}" class="btn btn-primary">Dashboard</a>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">Login</a>
                             @if (Route::has('register'))

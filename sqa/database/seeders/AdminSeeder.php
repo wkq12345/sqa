@@ -6,19 +6,19 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class StaffSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('staffs')->insert([
+        DB::table('admins')->insert([
             [
-                'name' => 'staff',
+                'name' => 'admin',
                 'identification_number' => null,
                 'photo' => null,
-                'staff_id' => 'ST0001',
+                'admin_id' => 'AD0001',
                 'user_id' => 1,
                 'role_id' => 1
             ],
