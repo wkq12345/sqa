@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StaffProfileController;
 use App\Http\Controllers\StudentProfileController;
+use App\Http\Controllers\AdminProfileController;
 
 Route::get('/', function () {
     return view('welcome');
