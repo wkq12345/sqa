@@ -18,7 +18,7 @@ class Assignment extends Model
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
-        
-    Course::class to refer course model (part afifah) so kena tunggu part die dlu*/ 
+
+    Course::class to refer course model (part afifah) so kena tunggu part die dlu*/
 
 }
