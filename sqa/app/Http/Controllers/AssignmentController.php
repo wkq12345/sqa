@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class AssignmentController extends Controller
 {
     // Interface 1: List all courses
-    public function assignments()
+    public function index()
     {
         // Get all courses from database
         $courses = Course::all();
@@ -30,7 +30,7 @@ class AssignmentController extends Controller
                                  ->orderBy('created_at', 'desc')
                                  ->get();
         
-        return view('assignments.course_assignments', compact('course', 'assignments'));
+        return view('assignments.list', compact('course', 'assignments'));
     }
 
     // Interface 3: Show create form
@@ -39,7 +39,7 @@ class AssignmentController extends Controller
         // Find the course
         $course = Course::findOrFail($courseId);
         
-        return view('assignments.create', compact('course'));
+        return view('assignments.form', compact('course'));
     }
 
     // Store new assignment
@@ -64,9 +64,7 @@ class AssignmentController extends Controller
         
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            
             $fileName = time() . '_' . $file->getClientOriginalName();
-            
             $filePath = $file->storeAs('assignments', $fileName, 'public');
         }
 
@@ -80,7 +78,7 @@ class AssignmentController extends Controller
                 'file_path' => $filePath,
             ]);
 
-         return redirect()->route('assignments.course', $request->course_id)
+         return redirect()->route('assignments.list', $request->course_id)
                            ->with('success', 'Assignment created successfully!');
                            
         } catch (\Exception $e) {
@@ -99,7 +97,6 @@ class AssignmentController extends Controller
     public function edit($assignmentId)
     {
         $assignment = Assignment::findOrFail($assignmentId);
-        
         return view('assignments.edit', compact('assignment'));
     }
 
@@ -146,7 +143,7 @@ class AssignmentController extends Controller
                 'file_path' => $filePath,
             ]);
 
-            return redirect()->route('assignments.course', $assignment->course_id)
+            return redirect()->route('assignments.list', $assignment->course_id)
                            ->with('success', 'Assignment updated successfully!');
                            
         } catch (\Exception $e) {
@@ -173,7 +170,7 @@ class AssignmentController extends Controller
             // Delete assignment from database
             $assignment->delete();
 
-            return redirect()->route('assignments.course', $courseId)
+            return redirect()->route('assignments.list', $courseId)
                            ->with('success', 'Assignment deleted successfully!');
                            
         } catch (\Exception $e) {

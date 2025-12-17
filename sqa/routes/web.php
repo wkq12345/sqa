@@ -63,41 +63,31 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::get('/assignments', [AssignmentController::class, 'assignments'])
-    ->name('assignments.assignments');
-});
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+    
+    Route::get('/assignments', [AssignmentController::class, 'index'])
+        ->name('assignments.assignments');
+    
     Route::get('/assignments/course/{courseId}', [AssignmentController::class, 'showCourseAssignments'])
-    ->name('assignments.course');
-});
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+        ->name('assignments.list');
+    
     Route::get('/assignments/create/{courseId}', [AssignmentController::class, 'create'])
-    ->name('assignments.create');
-});
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+        ->name('assignments.create');
+    
     Route::post('/assignments', [AssignmentController::class, 'store'])
-    ->name('assignments.store');
-});
-
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+        ->name('assignments.store');
+    
     Route::get('/assignments/{assignment_id}/edit', [AssignmentController::class, 'edit'])
-    ->name('assignments.edit');
-});
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+        ->name('assignments.edit');
+    
     Route::put('/assignments/{assignment_id}', [AssignmentController::class, 'update'])
-    ->name('assignments.update');
-});
-
-Route::middleware(['auth', 'role:staff'])->group(function () {
+        ->name('assignments.update');
+    
     Route::delete('/assignments/{assignment_id}', [AssignmentController::class, 'destroy'])
-    ->name('assignments.destroy');
+        ->name('assignments.destroy');
+    
+    Route::get('/assignments/{assignment_id}/download', [AssignmentController::class, 'downloadFile'])
+        ->name('assignments.download');
 });
-
 
 
 
