@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StaffProfileController;
 use App\Http\Controllers\StudentProfileController;
 use App\Http\Controllers\AdminProfileController;
+use App\Http\Controllers\AssignmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -60,11 +61,46 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
         return view('module.enroll');
     })->name('staff.enrollment');
 });
+
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::get('/staff/add', function () {
-        return view('module.add');
-    })->name('staff.add');
+    Route::get('/assignments', [AssignmentController::class, 'assignments'])
+    ->name('assignments.assignments');
 });
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/assignments/course/{courseId}', [AssignmentController::class, 'showCourseAssignments'])
+    ->name('assignments.course');
+});
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/assignments/create/{courseId}', [AssignmentController::class, 'create'])
+    ->name('assignments.create');
+});
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::post('/assignments', [AssignmentController::class, 'store'])
+    ->name('assignments.store');
+});
+
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::get('/assignments/{assignment_id}/edit', [AssignmentController::class, 'edit'])
+    ->name('assignments.edit');
+});
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::put('/assignments/{assignment_id}', [AssignmentController::class, 'update'])
+    ->name('assignments.update');
+});
+
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::delete('/assignments/{assignment_id}', [AssignmentController::class, 'destroy'])
+    ->name('assignments.destroy');
+});
+
+
+
+
 
 
 require __DIR__ . '/auth.php';
