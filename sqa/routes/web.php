@@ -64,29 +64,28 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 
 Route::middleware(['auth', 'role:staff'])->group(function () {
     
-    Route::get('/assignments', [AssignmentController::class, 'index'])
-        ->name('assignments.assignments');
+    Route::get('/assignment', [AssignmentController::class, 'index'])
+        ->name('assignment.assignments');
     
-    Route::get('/assignments/course/{courseId}', [AssignmentController::class, 'showCourseAssignments'])
-        ->name('assignments.list');
+    Route::get('/assignment/course/{course_id}', [AssignmentController::class, 'list'])
+        ->name('assignment.list');
     
-    Route::get('/assignments/create/{courseId}', [AssignmentController::class, 'create'])
-        ->name('assignments.create');
+    Route::get('/assignment/create/{course_id}', [AssignmentController::class, 'create'])
+        ->name('assignment.create');
     
-    Route::post('/assignments', [AssignmentController::class, 'store'])
-        ->name('assignments.store');
+    Route::post('/assignment', [AssignmentController::class, 'store'])
+        ->name('assignment.store');
     
-    Route::get('/assignments/{assignment_id}/edit', [AssignmentController::class, 'edit'])
-        ->name('assignments.edit');
+    Route::get('/assignment/{assignment_id}/edit', [AssignmentController::class, 'edit'])
+        ->name('assignment.edit');
     
-    Route::put('/assignments/{assignment_id}', [AssignmentController::class, 'update'])
-        ->name('assignments.update');
+    Route::put('/assignment/{assignment_id}', [AssignmentController::class, 'update'])
+        ->name('assignment.update');
     
-    Route::delete('/assignments/{assignment_id}', [AssignmentController::class, 'destroy'])
-        ->name('assignments.destroy');
+    Route::delete('/assignment/{assignment_id}', [AssignmentController::class, 'destroy'])
+        ->name('assignment.destroy');
     
-    Route::get('/assignments/{assignment_id}/download', [AssignmentController::class, 'downloadFile'])
-        ->name('assignments.download');
+    
 });
 
 

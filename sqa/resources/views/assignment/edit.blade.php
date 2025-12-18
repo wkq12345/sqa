@@ -46,7 +46,7 @@
 
         {{-- Form Container --}}
         <div class="form-wrapper">
-            <form action="{{ route('assignments.update', $assignment->id) }}" 
+            <form action="{{ route('assignment.update', $assignment->id) }}" 
                   method="POST" 
                   enctype="multipart/form-data"
                   id="assignment-form">

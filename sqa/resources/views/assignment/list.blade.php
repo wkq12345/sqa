@@ -44,62 +44,106 @@
             </div>
         </div>
 
-        {{-- Success/Error Messages --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+        {{-- Form Container --}}
+        <div class="form-wrapper">
+            <form action="{{ route('assignments.store') }}" 
+                  method="POST" 
+                  enctype="multipart/form-data"
+                  id="assignment-form">
+                @csrf
+                
+                {{-- Hidden Course ID --}}
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
 
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+                {{-- Title Field --}}
+                <div class="form-group">
+                    <label class="form-label">TITLE :</label>
+                    <input type="text" 
+                           class="form-input @error('title') is-invalid @enderror" 
+                           name="title" 
+                           value="{{ old('title') }}"
+                           placeholder=""
+                           required>
+                    @error('title')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
 
-        {{-- Assignment List --}}
-        <div class="assignments-list">
-            @forelse($assignments as $assignment)
-                <div class="assignment-row">
-                    <div class="assignment-title">{{ $assignment->title }}</div>
-                    <div class="assignment-actions">
-                        {{-- Edit Button (Blue) --}}
-                        <a href="{{ route('assignments.edit', $assignment->id) }}" 
-                           class="action-btn edit-btn">
-                            EDIT
-                        </a>
-                        
-                        {{-- Delete Button (Red) --}}
-                        <form action="{{ route('assignments.destroy', $assignment->id) }}" 
-                              method="POST" 
-                              class="delete-form d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="action-btn delete-btn">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                {{-- Date and Time Fields (Side by Side) --}}
+                <div class="row-fields">
+                    <div class="form-group half-width">
+                        <label class="form-label">DUEDATE :</label>
+                        <input type="date" 
+                               class="form-input @error('due_date') is-invalid @enderror" 
+                               name="due_date" 
+                               value="{{ old('due_date') }}"
+                               min="{{ date('Y-m-d') }}"
+                               required>
+                        @error('due_date')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group half-width">
+                        <label class="form-label">TIME :</label>
+                        <input type="time" 
+                               class="form-input @error('due_time') is-invalid @enderror" 
+                               name="due_time" 
+                               value="{{ old('due_time', '23:59') }}"
+                               required>
+                        @error('due_time')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
-            @empty
-                <div class="text-center py-5">
-                    <i class="bi bi-clipboard-x fs-1 text-muted"></i>
-                    <p class="text-muted mt-3">No assignments yet. Click the + button to add one.</p>
-                </div>
-            @endforelse
-        </div>
 
-        {{-- Floating Add Button --}}
-        <a href="{{ route('assignments.create', $course->id) }}" class="fab-button">
-            ADD
-        </a>
+                {{-- Description Field --}}
+                <div class="form-group">
+                    <label class="form-label">DESCRIPTION :</label>
+                    <textarea class="form-textarea @error('description') is-invalid @enderror" 
+                              name="description" 
+                              rows="5"
+                              required>{{ old('description') }}</textarea>
+                    @error('description')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- File Upload Field --}}
+                <div class="form-group">
+                    <label class="form-label">FILE UPLOAD :</label>
+                    <div class="file-upload-box" onclick="document.getElementById('file-input').click()">
+                        <div id="file-placeholder" class="file-placeholder">
+                            <p class="mb-0 text-muted">Click to select file...</p>
+                        </div>
+                        <div id="file-display" class="file-display" style="display: none;">
+                            <i class="bi bi-file-earmark"></i>
+                            <span id="file-name-text"></span>
+                        </div>
+                    </div>
+                    <input type="file" 
+                           id="file-input" 
+                           name="file" 
+                           accept=".pdf,.doc,.docx,.zip"
+                           class="d-none @error('file') is-invalid @enderror">
+                    @error('file')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Save Button --}}
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn-save">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <style>
-/* Sidebar Styles (same as Interface 1) */
+/* Sidebar Styles */
 .sidebar {
     width: 220px;
     background-color: #2c3e50;
@@ -159,101 +203,124 @@
     font-weight: 600;
 }
 
-/* Assignment Row */
-.assignments-list {
-    max-width: 800px;
+/* Form Wrapper */
+.form-wrapper {
+    max-width: 700px;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.assignment-row {
-    background: white;
-    border-radius: 30px;
-    padding: 20px 30px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Form Groups */
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 0.95rem;
     transition: all 0.3s;
 }
 
-.assignment-row:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.form-input:focus {
+    outline: none;
+    border-color: #3498db;
 }
 
-.assignment-title {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #2c3e50;
+.form-textarea {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: all 0.3s;
 }
 
-.assignment-actions {
+.form-textarea:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Row Fields (Date and Time) */
+.row-fields {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-/* Action Buttons */
-.action-btn {
-    border: none;
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
+.half-width {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+/* File Upload Box */
+.file-upload-box {
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #fafafa;
+}
+
+.file-upload-box:hover {
+    border-color: #3498db;
+    background-color: #f0f8ff;
+}
+
+.file-placeholder p {
+    color: #999;
+}
+
+.file-display {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-decoration: none;
+    gap: 10px;
 }
 
-.edit-btn {
-    background-color: #3498db;
-    color: white;
+.file-display i {
+    font-size: 1.5rem;
+    color: #3498db;
 }
 
-.edit-btn:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
-    color: white;
-}
-
-.delete-btn {
-    background-color: #e74c3c;
-    color: white;
-    font-size: 1.1rem;
-}
-
-.delete-btn:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
-}
-
-/* Floating Add Button */
-.fab-button {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: #27ae60;
+/* Save Button */
+.btn-save {
+    background-color: #2c3e50;
     color: white;
     border: none;
-    border-radius: 30px;
-    padding: 15px 30px;
+    border-radius: 25px;
+    padding: 12px 50px;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     transition: all 0.3s;
-    text-decoration: none;
-    display: inline-block;
 }
 
-.fab-button:hover {
-    background-color: #229954;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-    color: white;
+.btn-save:hover {
+    background-color: #1a252f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 5px;
 }
 
 /* Responsive */
@@ -271,44 +338,54 @@
         width: calc(100% - 70px);
     }
     
-    .assignment-row {
+    .row-fields {
         flex-direction: column;
-        align-items: flex-start;
     }
     
-    .assignment-actions {
-        width: 100%;
-        justify-content: flex-end;
-        margin-top: 10px;
+    .half-width {
+        margin-bottom: 25px !important;
     }
 }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Delete confirmation
-    const deleteForms = document.querySelectorAll('.delete-form');
+// File upload handling
+document.getElementById('file-input').addEventListener('change', function(event) {
+    const filePlaceholder = document.getElementById('file-placeholder');
+    const fileDisplay = document.getElementById('file-display');
+    const fileNameText = document.getElementById('file-name-text');
     
-    deleteForms.forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const confirmed = confirm('Confirm To Delete Project Group?');
-            
-            if (confirmed) {
-                form.submit();
-            }
-        });
-    });
+    if (this.files && this.files[0]) {
+        const file = this.files[0];
+        const fileName = file.name;
+        
+        fileNameText.textContent = fileName;
+        filePlaceholder.style.display = 'none';
+        fileDisplay.style.display = 'flex';
+    } else {
+        filePlaceholder.style.display = 'block';
+        fileDisplay.style.display = 'none';
+    }
+});
 
-    // Auto-dismiss alerts
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        }, 5000);
-    });
+// Form validation
+document.getElementById('assignment-form').addEventListener('submit', function(event) {
+    const title = document.querySelector('[name="title"]');
+    const dueDate = document.querySelector('[name="due_date"]');
+    const dueTime = document.querySelector('[name="due_time"]');
+    const description = document.querySelector('[name="description"]');
+    
+    let isValid = true;
+    
+    if (title.value.trim() === '') isValid = false;
+    if (dueDate.value === '') isValid = false;
+    if (dueTime.value === '') isValid = false;
+    if (description.value.trim() === '') isValid = false;
+    
+    if (!isValid) {
+        event.preventDefault();
+        alert('Please fill in all required fields (TITLE, DUEDATE, TIME, DESCRIPTION)');
+    }
 });
 </script>
 @endsection

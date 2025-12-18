@@ -12,6 +12,7 @@ class Course extends Model
     protected $table = 'courses';
 
     protected $fillable = [
+        'course_id',
         'course_code',
         'course_title',
         'description',
@@ -28,7 +29,7 @@ class Course extends Model
      */
     public function assignments()
     {
-        return $this->hasMany(Assignment::class, 'course_id', 'id');
+        return $this->hasMany(Assignment::class, 'course_id', 'course_id');
     }
 
     /**
@@ -38,4 +39,16 @@ class Course extends Model
     {
         return $this->course_title;
     }
+
+   public function scopeByCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
+
+    
+    public function scopeSearch($query, $search)
+    {
+        return $query->where('course_title', 'like', "%{$search}%")
+                     ->orWhere('course_code', 'like', "%{$search}%");
+    } 
 }

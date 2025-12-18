@@ -14,11 +14,11 @@ class Assignment extends Model
 
     protected $casts = ['due_date' => 'date', 'due_time' => 'datetime', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 
-   /* public function course()
+    public function course()
     {
-        return $this->belongsTo(Course::class, 'course_id', 'id');
+        return $this->belongsTo(Course::class, 'course_id', 'course_id');
     }
 
-    Course::class to refer course model (part afifah) so kena tunggu part die dlu*/
+
 
 }

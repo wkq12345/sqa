@@ -17,7 +17,7 @@
                 <i class="bi bi-book"></i>
                 <span>Module</span>
             </a>
-            <a href="{{ route('assignments.assignments') }}" class="nav-item active">
+            <a href="{{ route('assignment.assignments') }}" class="nav-item active">
                 <i class="bi bi-file-text"></i>
                 <span>Assignment & Submission</span>
             </a>
@@ -62,7 +62,7 @@
         {{-- Course Cards --}}
         <div class="courses-container">
             @forelse($courses as $course)
-                <div class="course-card" onclick="window.location='{{ route('assignments.list', $course->id) }}'">
+                <div class="course-card" onclick="window.location='{{ route('assignment.list', ['course_id' => $course->course_id]) }}'">
                     <h5>{{ strtoupper($course->name) }}</h5>
                 </div>
             @empty

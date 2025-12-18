@@ -16,30 +16,30 @@ class AssignmentController extends Controller
         // Get all courses from database
         $courses = Course::all();
         
-        return view('assignments.assignments', compact('courses'));
+        return view('assignment.assignments', compact('courses'));
     }
 
     // Interface 2: List assignments for a specific course
-  public function showCourseAssignments($courseId)
+  public function list($course_id)
     {
         // Find the course by ID
-        $course = Course::findOrFail($courseId);
+        $course = Course::findOrFail($course_id);
         
         // Get all assignments for this course, ordered by newest first
-        $assignments = Assignment::where('course_id', $courseId)
+        $assignments = Assignment::where('course_id', $course_id)
                                  ->orderBy('created_at', 'desc')
                                  ->get();
         
-        return view('assignments.list', compact('course', 'assignments'));
+        return view('assignment.list', compact('course', 'assignments'));
     }
 
     // Interface 3: Show create form
-      public function create($courseId)
+      public function create($course_id)
     {
         // Find the course
-        $course = Course::findOrFail($courseId);
+        $course = Course::findOrFail($course_id);
         
-        return view('assignments.form', compact('course'));
+        return view('assignment.form', compact('course'));
     }
 
     // Store new assignment
@@ -78,7 +78,7 @@ class AssignmentController extends Controller
                 'file_path' => $filePath,
             ]);
 
-         return redirect()->route('assignments.list', $request->course_id)
+         return redirect()->route('assignment.list', $request->course_id)
                            ->with('success', 'Assignment created successfully!');
                            
         } catch (\Exception $e) {
@@ -94,10 +94,10 @@ class AssignmentController extends Controller
     }
 
     // Interface 4: Show edit form
-    public function edit($assignmentId)
+    public function edit($assignment_id)
     {
-        $assignment = Assignment::findOrFail($assignmentId);
-        return view('assignments.edit', compact('assignment'));
+        $assignment = Assignment::findOrFail($assignment_id);
+        return view('assignment.edit', compact('assignment'));
     }
 
     // Update assignment
@@ -143,7 +143,7 @@ class AssignmentController extends Controller
                 'file_path' => $filePath,
             ]);
 
-            return redirect()->route('assignments.list', $assignment->course_id)
+            return redirect()->route('assignment.list', $assignment->course_id)
                            ->with('success', 'Assignment updated successfully!');
                            
         } catch (\Exception $e) {
@@ -170,7 +170,7 @@ class AssignmentController extends Controller
             // Delete assignment from database
             $assignment->delete();
 
-            return redirect()->route('assignments.list', $courseId)
+            return redirect()->route('assignment.list', $courseId)
                            ->with('success', 'Assignment deleted successfully!');
                            
         } catch (\Exception $e) {
