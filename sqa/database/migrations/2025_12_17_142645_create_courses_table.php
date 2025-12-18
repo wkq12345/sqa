@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('category', 100)->nullable();
             $table->timestamps();
 
+            
             $table->primary('course_id');
             $table->index('course_code');
             $table->index('category');
