@@ -12,7 +12,7 @@ class Assignment extends Model
 
     protected $primaryKey = 'assignment_id';
 
-    protected $fillable = ['title', 'due_date', 'due_time', 'description', 'file_path'];
+    protected $fillable = ['course_id','title', 'due_date', 'due_time', 'description', 'file_path'];
 
     protected $casts = ['due_date' => 'date', 'due_time' => 'datetime', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
 

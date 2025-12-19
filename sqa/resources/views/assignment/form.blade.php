@@ -1,59 +1,25 @@
 @extends('layouts.staff')
 
 @section('content')
-<div class="d-flex">
-    {{-- Sidebar --}}
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="#" class="nav-item">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="bi bi-person"></i>
-                <span>Profile</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="bi bi-book"></i>
-                <span>Module</span>
-            </a>
-            <a href="{{ route('assignments.assignments') }}" class="nav-item active">
-                <i class="bi bi-file-text"></i>
-                <span>Assignment & Submission</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="bi bi-gear"></i>
-                <span>Settings</span>
-            </a>
-            <a href="#" class="nav-item logout">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
 
     {{-- Main Content --}}
     <div class="main-content">
         {{-- Header --}}
-        <div class="content-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">ASSIGNMENT & SUBMISSION {{ strtoupper($course->name) }}</h2>
-                <button class="btn btn-outline-primary rounded-pill px-4">
-                    Notifications
-                </button>
             </div>
-        </div>
+       
 
         {{-- Form Container --}}
         <div class="form-wrapper">
-            <form action="{{ route('assignments.store') }}" 
+            <form action="{{ route('assignment.store') }}" 
                   method="POST" 
                   enctype="multipart/form-data"
                   id="assignment-form">
                 @csrf
                 
                 {{-- Hidden Course ID --}}
-                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <input type="hidden" name="course_id" value="{{ $course->course_id}}">
 
                 {{-- Title Field --}}
                 <div class="form-group">
@@ -143,19 +109,6 @@
 </div>
 
 <style>
-/* Sidebar Styles */
-.sidebar {
-    width: 220px;
-    background-color: #2c3e50;
-    min-height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-.sidebar-content {
-    padding: 20px 0;
-}
 
 .nav-item {
     display: flex;
@@ -205,7 +158,7 @@
 
 /* Form Wrapper */
 .form-wrapper {
-    max-width: 700px;
+    max-width: 1000px;
     background: white;
     padding: 40px;
     border-radius: 10px;

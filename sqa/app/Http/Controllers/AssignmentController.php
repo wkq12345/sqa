@@ -37,7 +37,7 @@ class AssignmentController extends Controller
       public function create($course_id)
     {
         // Find the course
-        $course = Course::findOrFail($course_id);
+         $course = Course::where('course_id', $course_id)->firstOrFail();
         
         return view('assignment.form', compact('course'));
     }
@@ -45,8 +45,10 @@ class AssignmentController extends Controller
     // Store new assignment
      public function store(Request $request)
     {
+       
+
        $validator = Validator::make($request->all(), [
-            'course_id' => 'required|exists:courses,id',
+            'course_id' => 'required|exists:courses,course_id',
             'title' => 'required|string|max:255',
             'due_date' => 'required|date|after_or_equal:today',
             'due_time' => 'required|date_format:H:i',
