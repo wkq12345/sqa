@@ -26,4 +26,9 @@ class Student extends Model
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'student_id');
+    }
 }

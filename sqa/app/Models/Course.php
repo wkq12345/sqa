@@ -45,10 +45,15 @@ class Course extends Model
         return $query->where('category', $category);
     }
 
-    
+
     public function scopeSearch($query, $search)
     {
         return $query->where('course_title', 'like', "%{$search}%")
                      ->orWhere('course_code', 'like', "%{$search}%");
-    } 
+    }
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'course_id', 'course_id');
+    }
 }
