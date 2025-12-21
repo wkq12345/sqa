@@ -5,6 +5,7 @@ use App\Http\Controllers\StaffProfileController;
 use App\Http\Controllers\StudentProfileController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\ModuleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,36 +57,53 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/staff/profile/photo', [StaffProfileController::class, 'uploadPhoto'])->name('staff.profile.photo');
 });
 
+
+//Module Enrollment Routes
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::get('/staff/enrollment', function () {
-        return view('module.enroll');
-    })->name('staff.enrollment');
+
+    Route::get('/staff/enrollment', [ModuleController::class, 'index'])
+        ->name('staff.enrollment');
+
+    Route::get('/staff/enrollment/{course}', [ModuleController::class, 'show'])
+        ->name('module.show');
+
+    Route::get('/staff/enrollment/{course}/add', [ModuleController::class, 'create'])
+        ->name('module.add');
+
+    Route::post('/staff/enrollment/store', [ModuleController::class, 'store'])
+        ->name('module.store');
+
+    Route::put('/staff/enrollment/update/{module}', [ModuleController::class, 'update'])
+        ->name('module.update');
+
+    Route::delete('/staff/enrollment/delete/{module}', [ModuleController::class, 'destroy'])
+        ->name('module.destroy');
 });
 
 Route::middleware(['auth', 'role:staff'])->group(function () {
-    
+
     Route::get('/assignment', [AssignmentController::class, 'index'])
         ->name('assignment.assignments');
-    
+
     Route::get('/assignment/course/{course_id}', [AssignmentController::class, 'list'])
         ->name('assignment.list');
-    
+
     Route::get('/assignment/create/{course_id}', [AssignmentController::class, 'create'])
         ->name('assignment.create');
-    
+
     Route::post('/assignment', [AssignmentController::class, 'store'])
         ->name('assignment.store');
-    
+
     Route::get('/assignment/{assignment_id}/edit', [AssignmentController::class, 'edit'])
         ->name('assignment.edit');
-    
+
     Route::put('/assignment/{assignment_id}', [AssignmentController::class, 'update'])
         ->name('assignment.update');
-    
+
     Route::delete('/assignment/{assignment_id}', [AssignmentController::class, 'destroy'])
         ->name('assignment.destroy');
-    
-    
+
+
 });
 
 

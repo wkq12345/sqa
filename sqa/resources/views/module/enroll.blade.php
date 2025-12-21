@@ -7,10 +7,9 @@
     .page-title {
         font-size: 24px;
         font-weight: 700;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 
-    /* Search Bar */
     .search-bar {
         width: 260px;
         border: 2px solid #000;
@@ -19,14 +18,13 @@
         font-size: 14px;
     }
 
-    /* Enrollment Card */
     .enroll-card {
         display: flex;
         align-items: center;
         border: 2px solid #000;
         border-radius: 40px;
         padding: 10px 20px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
         background: #fff;
     }
 
@@ -50,40 +48,103 @@
         text-decoration: none;
         font-size: 14px;
     }
+
+    .alphabet-filter {
+        position: fixed;
+        right: 20px;
+        top: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 1000;
+    }
+
+    .alphabet-filter a {
+        font-size: 13px;
+        font-weight: 600;
+        color: #000;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .alphabet-filter a:hover {
+        text-decoration: underline;
+    }
 </style>
 
 <div class="container-fluid">
 
-    <!-- TITLE + SEARCH BAR (Fixed Layout) -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="page-title">Enrollment List</h2>
-        <input type="text" class="search-bar" placeholder="Search...">
+
+        <input type="text"
+               id="searchInput"
+               class="search-bar"
+               placeholder="Search by Course ID or Title..."
+               onkeyup="filterCourses()">
     </div>
 
-    <!-- Dummy Data Until DB Is Ready -->
-    @php
-        $enrollments = [
-            ['course' => 'BCS3263 SOFTWARE QUALITY ASSURANCE', 'student' => 'John Doe'],
-            ['course' => 'BCS3153 SOFTWARE EVOLUTION MAINTENANCE', 'student' => 'Ali Bin Ahmad'],
-            ['course' => 'BCM3103 VIRTUAL REALITY', 'student' => 'Fatimah Zainal'],
-            ['course' => 'BCS3453 INTEGRATED APPLICATION DEVELOPMENT FRAMEWORK', 'student' => 'Sara Lim'],
-            ['course' => 'BUM2413 APPLIED STATISTIC', 'student' => 'Michael Tan'],
-        ];
-    @endphp
+    <div id="courseList">
 
-    <!-- Enrollment Cards -->
-    @foreach ($enrollments as $item)
-        <div class="enroll-card">
-            <img src="https://cdn-icons-png.flaticon.com/512/4211/4211763.png" alt="icon">
+        @php
+            $groupedCourses = $courses
+                ->sortBy('course_title')
+                ->groupBy(fn($course) => strtoupper(substr($course->course_title, 0, 1)));
+        @endphp
 
-            <div class="enroll-title">
-                {{ $item['course'] }} —
-                <span style="font-weight:500;">{{ $item['student'] }}</span>
+        @foreach ($groupedCourses as $letter => $items)
+            <div id="letter-{{ $letter }}" class="mb-4">
+
+                <h4 class="fw-bold mb-3">{{ $letter }}</h4>
+
+                @foreach ($items as $course)
+                    <div class="enroll-card course-item"
+                         data-course-id="{{ strtolower($course->course_code) }}"
+                         data-course-title="{{ strtolower($course->course_title) }}">
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/4211/4211763.png">
+
+                        <div class="enroll-title">
+                            {{ $course->course_code }} —
+                            <span style="font-weight:500">{{ $course->course_title }}</span>
+                        </div>
+
+                        <a href="{{ route('module.show', $course->course_id) }}" class="view-btn">
+                            View
+                        </a>
+                    </div>
+                @endforeach
+
             </div>
+        @endforeach
 
-            <a href="#" class="view-btn">View</a>
-        </div>
-    @endforeach
-
+    </div>
 </div>
+
+<div class="alphabet-filter">
+    @foreach (range('A','Z') as $char)
+        <a onclick="scrollToLetter('{{ $char }}')">{{ $char }}</a>
+    @endforeach
+</div>
+
+<script>
+    function filterCourses() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        let items = document.getElementsByClassName('course-item');
+
+        Array.from(items).forEach(item => {
+            let code = item.dataset.courseId;
+            let title = item.dataset.courseTitle;
+
+            item.style.display =
+                code.includes(input) || title.includes(input)
+                ? 'flex' : 'none';
+        });
+    }
+
+    function scrollToLetter(letter) {
+        let el = document.getElementById('letter-' + letter);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
 @endsection

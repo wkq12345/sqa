@@ -1,156 +1,298 @@
 @extends('layouts.staff')
 
-@section('title', 'Module Enrollment')
+@section('title', 'Add Students')
 
 @section('content')
 <style>
     .page-title {
-        font-size: 26px;
-        font-weight: 800;
-        margin-bottom: 5px;
-    }
-
-    .course-title {
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 700;
-        margin-bottom: 15px;
+        margin-bottom: 6px;
     }
 
-    /* Search Bar */
-    .search-box {
-        width: 280px;
+    /* STICKY CONTROL BAR */
+    .sticky-bar {
+        position: sticky;
+        top: 72px; /* below navbar */
+        z-index: 1200;
+        background: #f9fafb;
+        padding: 16px 0;
+        border-bottom: 2px solid #000;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .left-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .back-btn {
+        background: transparent;
+        border: 2px solid #000;
+        padding: 6px 18px;
+        border-radius: 20px;
+        text-decoration: none;
+        color: #000;
+        font-size: 14px;
+        width: fit-content;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .add-btn {
+        background: #16a34a;
+        color: #fff;
+        padding: 10px 26px;
+        border-radius: 25px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .reset-btn {
+        background: #e5e7eb;
+        color: #000;
+        padding: 10px 26px;
+        border-radius: 25px;
+        border: 2px solid #000;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .search-bar {
+        width: 260px;
         border: 2px solid #000;
         border-radius: 25px;
         padding: 8px 14px;
         font-size: 14px;
+        height: 42px;
     }
 
-    /* Add Student Button */
-    .add-btn {
-        background: #ff4fc0;
-        color: white;
-        font-weight: 700;
-        padding: 10px 28px;
-        border-radius: 25px;
-        text-decoration: none;
-        font-size: 15px;
-    }
-
-    .student-table {
-        width: 75%;
-        margin-top: 20px;
-        border-collapse: collapse;
-    }
-
-    .student-row {
+    /* STUDENT LIST */
+    .student-card {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 2px solid #000;
-        padding: 10px 15px;
-        margin-bottom: 10px;
-        border-radius: 6px;
+        border-bottom: 2px solid #000;
+        padding: 10px 14px;
         background: #fff;
     }
 
     .student-name {
-        font-size: 15px;
         font-weight: 600;
     }
 
-    .status-label {
-        font-size: 14px;
+    .select-box {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    /* ALPHABET FILTER */
+    .alphabet-filter {
+        position: fixed;
+        right: 20px;
+        top: 160px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 1000;
+    }
+
+    .alphabet-filter span {
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .modal-box {
+        background: #bfbfbf;
+        padding: 30px;
+        border-radius: 25px;
+        text-align: center;
+        width: 360px;
+        border: 3px solid #000;
+    }
+
+    .modal-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .confirm-btn {
+        background: #22c55e;
+        padding: 6px 18px;
+        border-radius: 20px;
+        border: none;
         font-weight: 700;
-        margin-right: 15px;
+        cursor: pointer;
     }
 
-    .status-active { color: #28a745; }
-    .status-completed { color: #0d6efd; }
-    .status-withdrawn { color: #dc3545; }
-
-    .edit-btn {
-        padding: 4px 16px;
-        background: #0d6efd;
-        color: white;
-        font-weight: 600;
-        border-radius: 6px;
-        font-size: 13px;
-        margin-right: 10px;
-        text-decoration: none;
+    .cancel-btn {
+        background: #dc2626;
+        color: #fff;
+        padding: 6px 18px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
     }
-
-    .del-btn {
-        background: #dc3545;
-        color: white;
-        border-radius: 50%;
-        padding: 8px 11px;
-        font-size: 13px;
-        text-decoration: none;
-    }
-
 </style>
 
 <div class="container-fluid">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="page-title">MODULE ENROLLMENT</h2>
-            <h4 class="course-title">BCS3263 SOFTWARE QUALITY ASSURANCE</h4>
-            <h5 style="font-weight:700;">STUDENT LIST :</h5>
-        </div>
+    <!-- STICKY BAR -->
+    <div class="sticky-bar">
+        <div class="top-actions">
 
-        <div class="text-end">
-            <a href="#" class="add-btn">ADD STUDENT</a>
-            <br><br>
-            <input type="text" class="search-box" placeholder="Search...">
-        </div>
-    </div>
+            <!-- LEFT -->
+            <div class="left-actions">
+                <a href="{{ route('module.show', $course->course_id) }}" class="back-btn">
+                    Back
+                </a>
 
-    @php
-        $students = [
-            ['name' => 'IKHWAN BADZLI', 'status' => 'ACTIVE'],
-            ['name' => 'AKMAL RAZELAN', 'status' => 'ACTIVE'],
-            ['name' => 'HARITH ZULHAIRI', 'status' => 'ACTIVE'],
-            ['name' => 'MASYITAH GHOZALI', 'status' => 'ACTIVE'],
-            ['name' => 'ATHIRAH HUSNA', 'status' => 'ACTIVE'],
-            ['name' => 'NOORZAHIRAH HANIM', 'status' => 'COMPLETED'],
-            ['name' => 'AKIF DANI', 'status' => 'COMPLETED'],
-            ['name' => 'HAIQAL ZHAFRIL', 'status' => 'COMPLETED'],
-            ['name' => 'FAWWAZ HATMI', 'status' => 'COMPLETED'],
-            ['name' => 'CHE KU DANIEL HILMI', 'status' => 'COMPLETED'],
-            ['name' => 'BUNGA CINTA LESTARI', 'status' => 'WITHDRAWN'],
-            ['name' => 'AFGAN DANIEL', 'status' => 'WITHDRAWN'],
-        ];
-    @endphp
+                <h2 class="page-title">
+                    {{ $course->course_code }} — {{ $course->course_title }}
+                </h2>
 
-    <div class="student-table">
-        @foreach ($students as $student)
-            <div class="student-row">
-                <div class="student-name">{{ $student['name'] }}</div>
+                <div class="action-buttons">
+                    <button type="button" class="add-btn" onclick="openConfirm()">
+                        ADD SELECTED
+                    </button>
 
-                <div class="d-flex align-items-center">
-
-                    {{-- STATUS --}}
-                    <div class="status-label
-                        {{ $student['status'] == 'ACTIVE' ? 'status-active' : '' }}
-                        {{ $student['status'] == 'COMPLETED' ? 'status-completed' : '' }}
-                        {{ $student['status'] == 'WITHDRAWN' ? 'status-withdrawn' : '' }}
-                    ">
-                        ( {{ strtoupper($student['status']) }} )
-                    </div>
-
-                    {{-- EDIT --}}
-                    <a href="#" class="edit-btn">EDIT</a>
-
-                    {{-- DELETE --}}
-                    <a href="#" class="del-btn">
-                        <i class="bi bi-trash"></i>
-                    </a>
+                    <button type="button" class="reset-btn" onclick="resetSelection()">
+                        RESET
+                    </button>
                 </div>
             </div>
-        @endforeach
+
+            <!-- RIGHT -->
+            <input type="text"
+                   id="searchInput"
+                   class="search-bar"
+                   placeholder="Search student name or ID..."
+                   onkeyup="filterStudents()">
+        </div>
     </div>
 
+    <!-- FORM -->
+    <form id="addForm" method="POST" action="{{ route('module.store') }}">
+        @csrf
+        <input type="hidden" name="course_id" value="{{ $course->course_id }}">
+
+        <div id="studentList">
+            @php
+                $enrolledIds = $course->modules->pluck('student_id')->toArray();
+                $availableStudents = $students
+                    ->whereNotIn('id', $enrolledIds)
+                    ->sortBy('name');
+            @endphp
+
+            @foreach ($availableStudents as $student)
+                <div class="student-card student-item"
+                     id="letter-{{ strtoupper(substr($student->name, 0, 1)) }}"
+                     data-name="{{ strtolower($student->name) }}"
+                     data-id="{{ strtolower($student->student_id) }}">
+
+                    <div>
+                        <div class="student-name">{{ $student->name }}</div>
+                        <small>{{ $student->student_id }}</small>
+                    </div>
+
+                    <input type="checkbox"
+                           class="select-box"
+                           name="student_id[]"
+                           value="{{ $student->id }}">
+                </div>
+            @endforeach
+        </div>
+    </form>
 </div>
 
+<!-- ALPHABET -->
+<div class="alphabet-filter">
+    @foreach (range('A','Z') as $char)
+        <span onclick="scrollToLetter('{{ $char }}')">{{ $char }}</span>
+    @endforeach
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+        <h3>CONFIRM ADD STUDENTS?</h3>
+
+        <div class="modal-actions">
+            <button class="confirm-btn" onclick="submitForm()">CONFIRM</button>
+            <button class="cancel-btn" onclick="closeConfirm()">CANCEL</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterStudents() {
+        let input = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.student-item').forEach(item => {
+            let name = item.dataset.name;
+            let id = item.dataset.id;
+            item.style.display =
+                name.includes(input) || id.includes(input)
+                ? 'flex' : 'none';
+        });
+    }
+
+    function resetSelection() {
+        document.getElementById('searchInput').value = '';
+        document.querySelectorAll('.select-box').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.student-item').forEach(item => {
+            item.style.display = 'flex';
+        });
+    }
+
+    function scrollToLetter(letter) {
+        let el = document.getElementById('letter-' + letter);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openConfirm() {
+        let checked = document.querySelectorAll('.select-box:checked');
+        if (checked.length === 0) {
+            alert('Please select at least one student.');
+            return;
+        }
+        document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    function submitForm() {
+        document.getElementById('addForm').submit();
+    }
+</script>
 @endsection
