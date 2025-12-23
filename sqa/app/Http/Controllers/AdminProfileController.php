@@ -39,8 +39,8 @@ class AdminProfileController extends Controller
 
         $admin = Admin::where('user_id', Auth::id())->firstOrFail();
 
-        if ($admin->photo && Storage::exists($admin->photo)) {
-            Storage::delete($admin->photo);
+        if ($admin->photo && Storage::disk('public')->exists($admin->photo)) {
+            Storage::disk('public')->delete($admin->photo);
         }
 
         $path = $request->file('photo')->store('profile_photos', 'public');

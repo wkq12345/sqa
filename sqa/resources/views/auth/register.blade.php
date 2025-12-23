@@ -41,6 +41,7 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" name="password" class="form-control" required>
+                    <small class="form-text text-muted">Use at least 8 characters with one uppercase letter.</small>
                     @error('password') <small class="text-danger">{{ $message }}</small> @enderror
                 </div>
 
@@ -52,8 +53,8 @@
                 <div class="mb-3">
                     <label for="role" class="form-label">Register as</label>
                     <select name="role_id" class="form-select" required>
-                        <option value="2">Student</option>
-                        <option value="1">Staff</option>
+                        <option value="3">Student</option>
+                        <option value="2">Staff</option>
                     </select>
                 </div>
 
