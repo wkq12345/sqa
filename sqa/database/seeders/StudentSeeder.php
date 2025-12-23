@@ -24,7 +24,7 @@ class StudentSeeder extends Seeder
                 ['email' => 'student' . $i . '@learnsphere.edu'],
                 [
                     'password' => Hash::make('password'),
-                    'role_id'  => 2, // STUDENT role
+                    'role_id'  => 3, // STUDENT role
                 ]
             );
 
@@ -38,7 +38,7 @@ class StudentSeeder extends Seeder
                     'phone' => $faker->phoneNumber,
                     'address' => $faker->address,
                     'photo' => null,
-                    'role_id' => 2, // STUDENT role
+                    'role_id' => 3, // STUDENT role
                 ]
             );
         }
