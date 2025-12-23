@@ -50,6 +50,17 @@ tbody td { padding:10px;border-bottom:1px solid #ddd }
 }
 .edit-btn { background:#000;color:#fff }
 
+.success-alert {
+    margin-top: 10px;
+    padding: 10px 18px;
+    border-radius: 18px;
+    background: #dcfce7;
+    color: #065f46;
+    font-weight: 700;
+    border: 2px solid #16a34a;
+    width: fit-content;
+}
+
 .delete-btn {
     background:none;
     border:none;
@@ -141,6 +152,11 @@ tbody td { padding:10px;border-bottom:1px solid #ddd }
         <div class="left-actions">
             <a href="{{ route('staff.enrollment') }}" class="back-btn">Back</a>
             <h2 class="page-title">{{ $course->course_code }} — {{ $course->course_title }}</h2>
+            @if (session('success'))
+                <div class="success-alert">
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
 
         <div class="right-actions">
