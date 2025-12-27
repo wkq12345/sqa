@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id('course_id')->autoIncrement();
-            $table->string('course_code', 20)->unique();
+            $table->string('course_code', 255)->unique();
             $table->string('course_title', 255);
             $table->text('description')->nullable();
             $table->string('category', 100)->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
 
-            
+
             $table->primary('course_id');
             $table->index('course_code');
             $table->index('category');
