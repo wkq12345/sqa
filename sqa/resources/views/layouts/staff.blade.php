@@ -19,8 +19,12 @@
             <a href="{{ route('staff.dashboard') }}" class="nav-link"><i class="bi bi-house-door"></i><span class="nav-text">Dashboard</span></a>
             <a href="{{ route('staff.profile') }}" class="nav-link"><i class="bi bi-people"></i><span class="nav-text">Profile</span></a>
             <a href="#" class="nav-link"><i class="bi bi-gear"></i><span class="nav-text">Settings</span></a>
+            <a href="{{ route('courses.index') }}" class="nav-link">
+                <i class="bi bi-book"></i>
+                <span class="nav-text">Courses</span>
+            </a>
             <a href="{{ route('staff.enrollment') }}" class="nav-link">
-        <i class="bi bi-journal-text"></i><span class="nav-text">Module</span></a>
+            <i class="bi bi-journal-text"></i><span class="nav-text">Module</span></a>
             <a href="{{ route('assignment.assignments') }}" class="nav-link"><i class="bi bi-journal-text"></i><span class="nav-text">Assignment & Submission</span></a>
             <form action="{{ route('logout') }}" method="POST" class="mt-auto p-3">
                 @csrf

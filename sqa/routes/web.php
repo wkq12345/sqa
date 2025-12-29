@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentProfileController;
 use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\CourseController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -105,8 +106,12 @@ Route::middleware(['auth', 'role:staff'])->group(function () {
 
 
 });
+//Course Routes
+Route::middleware(['auth', 'role:staff'])->group(function () {
+    Route::resource('courses', CourseController::class);
+});
 
-
+Route::resource('courses',CourseController::class);
 
 
 

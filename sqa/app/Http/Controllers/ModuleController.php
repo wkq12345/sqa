@@ -15,7 +15,6 @@ class ModuleController extends Controller
     public function index()
     {
         $courses = Course::orderBy('course_title')->get();
-
         return view('module.enroll', compact('courses'));
     }
 
@@ -35,12 +34,11 @@ class ModuleController extends Controller
     }
 
     /**
-     * Show form to add student into course
+     * Show form to add students
      */
     public function create($courseId)
     {
         $course = Course::where('course_id', $courseId)->firstOrFail();
-
         $students = Student::orderBy('name')->get();
 
         return view('module.add', compact('course', 'students'));
@@ -63,7 +61,7 @@ class ModuleController extends Controller
                             ->exists();
 
             if (!$exists) {
-                $student = Student::find($studentId);
+                $student = Student::findOrFail($studentId);
 
                 Module::create([
                     'student_id' => $student->id,
@@ -76,7 +74,7 @@ class ModuleController extends Controller
 
         return redirect()
             ->route('module.show', $request->course_id)
-            ->with('success', 'Students added successfully.');
+            ->with('success', 'Students successfully added to the module.');
     }
 
     /**
@@ -93,7 +91,7 @@ class ModuleController extends Controller
             'status' => $request->status,
         ]);
 
-        return back()->with('success', 'Enrollment status updated.');
+        return back()->with('success', 'Student status updated successfully.');
     }
 
     /**
@@ -108,6 +106,6 @@ class ModuleController extends Controller
 
         return redirect()
             ->route('module.show', $courseId)
-            ->with('success', 'Student removed from course.');
+            ->with('success', 'Student removed from the module.');
     }
 }

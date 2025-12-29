@@ -35,24 +35,28 @@ class CourseSeeder extends Seeder
             ['Virtual Reality', 'Multimedia'],
         ];
 
-        $counter = 1;
-
         for ($i = 1; $i <= 100; $i++) {
 
             $base = $baseCourses[array_rand($baseCourses)];
 
-            $courseCode = 'BCS' . str_pad(2000 + $i, 4, '0', STR_PAD_LEFT);
+            $courseCode = 'BCS' . str_pad($i, 4, '0', STR_PAD_LEFT);
+
+            // 🔒 ABSOLUTE SAFETY: hard cut title
+            $courseTitle = substr($base[0] . ' ' . $i, 0, 100);
 
             Course::updateOrCreate(
                 ['course_code' => $courseCode],
                 [
-                    'course_title' => $base[0] . ' ' . $i,
-                    'description'  => 'This course covers fundamental and advanced concepts related to ' . strtolower($base[0]) . '.',
-                    'category'     => $base[1],
+                    'course_title' => $courseTitle,
+                    'description'  => substr(
+                        'This course covers fundamental and advanced concepts related to ' . strtolower($base[0]) . '.',
+                        0,
+                        500
+                    ),
+                    'category'   => $base[1],
+                    'image_path'=> null,
                 ]
             );
-
-            $counter++;
         }
     }
 }
